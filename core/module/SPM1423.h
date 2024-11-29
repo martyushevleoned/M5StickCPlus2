@@ -1,20 +1,27 @@
 #pragma once
 
 #include <driver/i2s.h>
+#include <vector>
 
 #define SAMPLE_BUFFER_SIZE 512
 #define SAMPLE_RATE 48000
 
-namespace M5Stack {
+namespace Core {
 
 class SPM1423 {
 
+private:
+  int32_t samples[SAMPLE_BUFFER_SIZE];
+  int32_t samplesRead = 0;
+
+  void readSamples() {
+    size_t bytes_read = 0;
+    i2s_read(I2S_NUM_0, samples, sizeof(int32_t) * SAMPLE_BUFFER_SIZE, &bytes_read, portMAX_DELAY);
+    samplesRead = bytes_read / sizeof(int32_t);
+  }
+
 public:
-  int32_t raw_samples[SAMPLE_BUFFER_SIZE];
-  int samples_read;
-
   SPM1423(int i2s_clk, int i2s_data) {
-
     i2s_config_t i2s_config = {
       .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM),
       .sample_rate = SAMPLE_RATE,
@@ -35,10 +42,14 @@ public:
     i2s_set_pin(I2S_NUM_0, &i2s_mic_pins);
   }
 
-  void update() {
-    size_t bytes_read = 0;
-    i2s_read(I2S_NUM_0, raw_samples, sizeof(int32_t) * SAMPLE_BUFFER_SIZE, &bytes_read, portMAX_DELAY);
-    samples_read = bytes_read / sizeof(int32_t);
+  std::vector<int32_t> getSamples() {
+    readSamples();
+    return std::vector<int32_t>(samples, samples + samplesRead);
+  }
+
+  std::vector<int32_t> getSamples(int32_t size) {
+    readSamples();
+    return std::vector<int32_t>(samples, samples + size);
   }
 };
 

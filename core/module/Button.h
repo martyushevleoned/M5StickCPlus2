@@ -1,8 +1,8 @@
 #pragma once
 
-#define BTN_HOLD_TIME 2000
+#define BTN_HOLD_TIME 3000
 
-namespace M5Stack {
+namespace Core {
 
 enum class ButtonState { Released,
                          Pressed,
@@ -41,11 +41,11 @@ public:
   }
 
   bool isReleased() {
-    return currentState == ButtonState::Released && previousState != ButtonState::Released;
+    return currentState == ButtonState::Released && (previousState == ButtonState::Pressed || previousState == ButtonState::Holded);
   }
 
   bool isPressed() {
-    return currentState == ButtonState::Pressed && previousState == ButtonState::Released;
+    return currentState == ButtonState::Released && previousState == ButtonState::Pressed;
   }
 
   bool isHolded() {

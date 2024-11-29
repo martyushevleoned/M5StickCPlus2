@@ -4,12 +4,20 @@
 
 #define I2C_BM8563_DEFAULT_ADDRESS 0x51
 
-namespace M5Stack {
+namespace Core {
 
 struct BM8563_Time {
   int8_t hours;
   int8_t minutes;
   int8_t seconds;
+
+  String toString() {
+    String result;
+    result += seconds < 10 ? "0" + String(seconds) : String(seconds);
+    result += minutes < 10 ? ":0" + String(minutes) : ":" + String(minutes);
+    result += hours < 10 ? ":0" + String(hours) : ":" + String(hours);
+    return result;
+  }
 };
 
 struct BM8563_Date {
@@ -17,6 +25,14 @@ struct BM8563_Date {
   int8_t date;
   int8_t month;
   int16_t year;
+
+  String toString() {
+    String result;
+    result += date < 10 ? "0" + String(date) : String(date);
+    result += month < 10 ? ".0" + String(month) : "." + String(month);
+    result += "." + String(year % 100);
+    return result;
+  }
 };
 
 class BM8563 {
@@ -72,7 +88,7 @@ public:
     wire->endTransmission(false);
     wire->requestFrom(deviceAddress, 3);
 
-    uint8_t buf[3] = { 0 };
+    uint8_t buf[3];
     while (wire->available()) {
       buf[0] = wire->read();
       buf[1] = wire->read();
@@ -101,7 +117,7 @@ public:
     wire->endTransmission(false);
     wire->requestFrom(deviceAddress, 4);
 
-    uint8_t buf[4] = { 0 };
+    uint8_t buf[4];
     while (wire->available()) {
       buf[0] = wire->read();
       buf[1] = wire->read();

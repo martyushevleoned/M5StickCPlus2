@@ -4,7 +4,7 @@
 
 #define I2C_MPU6886_DEFAULT_ADDRESS 0x68
 
-namespace M5Stack {
+namespace Core {
 
 struct Point3 {
   float x;

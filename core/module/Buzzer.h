@@ -1,6 +1,6 @@
 #pragma once
 
-namespace M5Stack {
+namespace Core {
 
 class Buzzer {
 
