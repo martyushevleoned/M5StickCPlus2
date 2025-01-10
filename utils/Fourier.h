@@ -8,50 +8,64 @@ namespace Utils {
 class Fourier {
 
 private:
-  static std::vector<std::complex<double>> fft(std::vector<std::complex<double>> &samples) {
+  static std::vector<std::complex<double>> dft(const std::vector<std::complex<double>> &samples) {
+    const unsigned long N = samples.size();
+    std::vector<std::complex<double>> spectrum(N);
 
-    const int N = samples.size();
+    for (unsigned long k = 0; k < N; k++)
+      for (unsigned long n = 0; n < N; n++)
+        spectrum[k] += samples[n] * std::polar(1.0, -2.0 * M_PI * k * n / N);
+
+    return spectrum;
+  }
+
+  static std::vector<std::complex<double>> fftN2(const std::vector<std::complex<double>> &samples) {
+    const unsigned long N = samples.size();
     if (N == 1)
-      return samples;
+      return dft(samples);
 
-    const int evenN = N / 2;
-    const int oddN = N - evenN;
+    const unsigned long M = N / 2;
+    std::vector<std::complex<double>> evenSamples(M);
+    std::vector<std::complex<double>> oddSamples(M);
 
-    std::vector<std::complex<double>> xEven(evenN);
-    std::vector<std::complex<double>> xOdd(oddN);
+    for (unsigned long k = 0; k < M; k++) {
+      evenSamples[k] = samples[2 * k];
+      oddSamples[k] = samples[2 * k + 1];
+    }
 
-    for (int i = 0; i < evenN; i++)
-      xEven[i] = samples[i * 2];
-    for (int i = 0; i < oddN; i++)
-      xOdd[i] = samples[i * 2 + 1];
+    evenSamples = fftN2(evenSamples);
+    oddSamples = fftN2(oddSamples);
 
-    const std::vector<std::complex<double>> fEven = fft(xEven);
-    const std::vector<std::complex<double>> fOdd = fft(xOdd);
+    std::vector<std::complex<double>> spectrum(N);
+    for (unsigned long k = 0; k < M; k++) {
+      spectrum[k] = evenSamples[k] + std::polar(1.0, -2.0 * M_PI * k / N) * oddSamples[k];
+      spectrum[k + M] = evenSamples[k] - std::polar(1.0, -2.0 * M_PI * k / N) * oddSamples[k];
+    }
 
-    std::vector<std::complex<double>> frequencyBins(N);
-    for (int i = 0; i < N; i++)
-      frequencyBins[i] = fEven[i % evenN] + std::polar(1.0, -2.0 * M_PI * i / N) * fOdd[i % oddN];
+    return spectrum;
+  }
 
-    return frequencyBins;
+  static unsigned long nextPow2(const unsigned long N) {
+    unsigned long pow2 = 1;
+    while (pow2 < N)
+      pow2 <<= 1;
+    return pow2;
   }
 
 public:
-  static std::vector<std::complex<double>> fft(std::vector<int32_t> &samples) {
-    std::vector<std::complex<double>> complexSamples(samples.size());
-    std::transform(samples.begin(), samples.end(), complexSamples.begin(), [](const double sample) {
+  static std::vector<double> fftA(const std::vector<int32_t> &samples) {
+    const unsigned long N = nextPow2(samples.size());
+    std::vector<std::complex<double>> spectrum(N);
+    std::transform(samples.begin(), samples.end(), spectrum.begin(), [](const int32_t sample) {
       return std::complex<double>(sample, 0);
     });
-    complexSamples = fft(complexSamples);
-    return complexSamples;
-  }
-
-  static std::vector<double> fftA(std::vector<int32_t> &samples) {
-    std::vector<std::complex<double>> complexSamples = fft(samples);
-    std::vector<double> samplesA(complexSamples.size());
-    std::transform(complexSamples.begin(), complexSamples.end(), samplesA.begin(), [](const std::complex<double> complexSample) {
-      return sqrt(pow(complexSample.real(), 2) + pow(complexSample.imag(), 2));
+    spectrum = fftN2(spectrum);
+    std::vector<double> spectrumA(N);
+    std::transform(spectrum.begin(), spectrum.end(), spectrumA.begin(), [](const std::complex<double> sample) {
+      return sqrt(pow(sample.real(), 2) + pow(sample.imag(), 2));
     });
-    return samplesA;
+    return spectrumA;
   }
 };
+
 }

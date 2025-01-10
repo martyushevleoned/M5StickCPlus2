@@ -22,12 +22,12 @@ public:
 
     while (true) {
 
-      std::vector<int32_t> samples = stick->mic.getSamples(512);
-      std::vector<double> spectrumA = Utils::Fourier::fftA(samples);
-      double maxValue = *(std::max_element(std::begin(spectrumA) + offset, std::begin(spectrumA) + countOfSamples + offset));
+      std::vector<double> rawSpectrumA = Utils::Fourier::fftA(stick->mic.getSamples(512));
+      std::vector<double> spectrumA(rawSpectrumA.begin() + offset, rawSpectrumA.begin() + countOfSamples + offset);
+      double maxValue = *(std::max_element(std::begin(spectrumA), std::end(spectrumA)));
 
       for (int i = 0; i < countOfSamples; i++)
-        stick->lcd.drawPixel(i, height, BLUE, spectrumA[i + offset] / maxValue * 255, BLACK);
+        stick->lcd.drawPixel(i, height, BLUE, spectrumA[i] / maxValue * 255, BLACK);
       height = (height + 1) % stick->lcd.height();
       stick->lcd.drawFastHLine(0, height, stick->lcd.width(), BLACK);
 

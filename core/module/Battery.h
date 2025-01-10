@@ -8,7 +8,7 @@ private:
   int8_t pin;
 
 public:
-  Battery(int8_t pin) {
+  Battery(const int8_t pin) {
     this->pin = pin;
     pinMode(pin, INPUT);
   }

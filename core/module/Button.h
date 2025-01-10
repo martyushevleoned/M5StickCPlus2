@@ -17,7 +17,7 @@ private:
   unsigned long lastReleaseTime = millis();
 
 public:
-  Button(int8_t pin) {
+  Button(const int8_t pin) {
     this->pin = pin;
     pinMode(pin, INPUT);
   }

@@ -8,7 +8,7 @@ private:
   int8_t pin;
 
 public:
-  Led(int8_t pin) {
+  Led(const int8_t pin) {
     this->pin = pin;
     pinMode(pin, OUTPUT);
   }

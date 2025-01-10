@@ -16,25 +16,25 @@ namespace Core {
 class ST7789V2 : public TFT_eSPI {
 
 public:
-  ST7789V2(int8_t cs, int8_t dc, int8_t mosi, int8_t sclk, int8_t rst, int8_t bl)
+  ST7789V2()
     : TFT_eSPI() {
   }
 
-  void printCenter(int32_t x, int32_t y, String text) {
+  void printCenter(const int32_t x, const int32_t y, const String text) {
     setCursor(x - textWidth(text) / 2, y - fontHeight() / 2);
     print(text);
   }
 
-  void printCenter(String text) {
+  void printCenter(const String text) {
     printCenter(width() / 2, height() / 2, text);
   }
 
-  void printRight(int32_t x, int32_t y, String text) {
+  void printRight(const int32_t x, const int32_t y, const String text) {
     setCursor(x - textWidth(text), y);
     print(text);
   }
 
-  void setWidthScaledTextSize(int32_t width, String text) {
+  void setWidthScaledTextSize(const int32_t width, const String text) {
     int lenght = text.length();
     if (lenght < 5) {
       setTextSize(8);
@@ -47,7 +47,7 @@ public:
     }
   }
 
-  void setWidthScaledTextSize(String text) {
+  void setWidthScaledTextSize(const String text) {
     setWidthScaledTextSize(width(), text);
   }
 };

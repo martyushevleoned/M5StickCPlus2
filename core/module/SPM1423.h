@@ -21,7 +21,7 @@ private:
   }
 
 public:
-  SPM1423(int i2s_clk, int i2s_data) {
+  SPM1423(const int i2s_clk, const int i2s_data) {
     i2s_config_t i2s_config = {
       .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM),
       .sample_rate = SAMPLE_RATE,

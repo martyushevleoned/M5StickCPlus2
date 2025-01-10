@@ -35,7 +35,7 @@ protected:
   uint16_t textColor;
 
 public:
-  Menu(String menuName, std::vector<std::shared_ptr<MenuItem>> items, uint16_t textColor = WHITE, uint16_t backgroundColor = BLACK)
+  Menu(const String menuName, const std::vector<std::shared_ptr<MenuItem>> &items, const uint16_t textColor = WHITE, const uint16_t backgroundColor = BLACK)
     : MenuItem(menuName) {
     this->items = items;
     this->textColor = textColor;

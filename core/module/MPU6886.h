@@ -21,7 +21,7 @@ private:
   float aRes = 8.0 / 32768.0;
   float gRes = 2000.0 / 32768.0;
 
-  void writeByte(uint8_t address, uint8_t data) {
+  void writeByte(const uint8_t address, const uint8_t data) {
     delay(5);
     wire->beginTransmission(deviceAddress);
     wire->write(address);
@@ -29,7 +29,7 @@ private:
     wire->endTransmission();
   }
 
-  uint8_t readByte(uint8_t address) {
+  uint8_t readByte(const uint8_t address) {
     wire->beginTransmission(deviceAddress);
     wire->write(address);
     wire->endTransmission();
@@ -38,7 +38,7 @@ private:
   }
 
 public:
-  MPU6886(int i2c_sda, int i2c_clk, int deviceAddress) {
+  MPU6886(const int i2c_sda, const int i2c_clk, const int deviceAddress) {
     Wire1.begin(i2c_sda, i2c_clk);
     this->wire = &Wire1;
     this->deviceAddress = deviceAddress;
