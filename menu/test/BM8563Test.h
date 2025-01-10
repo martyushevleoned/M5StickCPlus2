@@ -19,8 +19,8 @@ public:
 
     while (true) {
       
-      stick->lcd.printCenter(stick->lcd.width() / 2, stick->lcd.height() / 3, stick->time.getTime().toString());
-      stick->lcd.printCenter(stick->lcd.width() / 2, stick->lcd.height() * 2 / 3, stick->time.getDate().toString());
+      stick->lcd.printCenter(stick->time.getTime().toString(), stick->lcd.width() / 2, stick->lcd.height() / 3);
+      stick->lcd.printCenter(stick->time.getDate().toString(), stick->lcd.width() / 2, stick->lcd.height() * 2 / 3);
 
       tick();
       if (exitTrigger())

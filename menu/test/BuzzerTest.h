@@ -25,7 +25,7 @@ public:
         stick->buzzer.tone(4000, 50);
 
       tick();
-      if (isExit())
+      if (exitTrigger())
         return;
     }
   }

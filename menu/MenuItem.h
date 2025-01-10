@@ -17,7 +17,7 @@ private:
 protected:
   Core::StickCPlus2* stick = Core::StickCPlus2::getInstance();
 
-  void setTickRate(float tickPerSecond) {
+  void setTickRate(const float tickPerSecond) {
     tickPeriod = 1000 / tickPerSecond;
   }
 
@@ -28,7 +28,7 @@ protected:
   }
 
 public:
-  MenuItem(String itemName) {
+  MenuItem(const String itemName) {
     this->itemName = itemName;
   }
 
@@ -42,10 +42,6 @@ public:
     stick->lcd.printCenter(itemName);
     delay(PREVIEW_DURATION);
   }
-
-  bool isExit() {
-    return stick->btnB.isHolded();
-  } 
 
   bool exitTrigger() {
     stick->btnB.update();

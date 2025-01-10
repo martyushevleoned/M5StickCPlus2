@@ -2,14 +2,12 @@
 
 #include <Wire.h>
 
-#define I2C_BM8563_DEFAULT_ADDRESS 0x51
-
 namespace Core {
 
 struct BM8563_Time {
-  int8_t hours;
-  int8_t minutes;
   int8_t seconds;
+  int8_t minutes;
+  int8_t hours;
 
   String toString() {
     String result;
@@ -21,8 +19,8 @@ struct BM8563_Time {
 };
 
 struct BM8563_Date {
-  int8_t weekDay;
   int8_t date;
+  int8_t weekDay;
   int8_t month;
   int16_t year;
 
@@ -40,26 +38,24 @@ class BM8563 {
 private:
   int deviceAddress;
   TwoWire* wire;
-  BM8563_Time time;
-  BM8563_Date date;
 
-  uint8_t bcd2ToByte(uint8_t value) {
+  uint8_t bcd2ToByte(const uint8_t value) {
     uint8_t tmp = ((uint8_t)(value & (uint8_t)0xF0) >> (uint8_t)0x4) * 10;
     return (tmp + (value & (uint8_t)0x0F));
   }
 
-  uint8_t byteToBcd2(uint8_t value) {
-    return ((uint8_t)((value / 10) << 4) | (value %= 10));
+  uint8_t byteToBcd2(const uint8_t value) {
+    return ((uint8_t)((value / 10) << 4) | (value % 10));
   }
 
-  void writeReg(uint8_t reg, uint8_t data) {
+  void writeReg(const uint8_t reg, const uint8_t data) {
     wire->beginTransmission(deviceAddress);
     wire->write(reg);
     wire->write(data);
     wire->endTransmission();
   }
 
-  uint8_t readReg(uint8_t reg) {
+  uint8_t readReg(const uint8_t reg) {
     wire->beginTransmission(deviceAddress);
     wire->write(reg);
     wire->endTransmission(false);
@@ -68,7 +64,7 @@ private:
   }
 
 public:
-  BM8563(int i2c_sda, int i2c_clk, int deviceAddress) {
+  BM8563(const int i2c_sda, const int i2c_clk, const int deviceAddress) {
     Wire1.begin(i2c_sda, i2c_clk);
     this->wire = &Wire1;
     this->deviceAddress = deviceAddress;
@@ -95,14 +91,14 @@ public:
       buf[2] = wire->read();
     }
 
-    time.seconds = bcd2ToByte(buf[0] & 0x7f);
-    time.minutes = bcd2ToByte(buf[1] & 0x7f);
-    time.hours = bcd2ToByte(buf[2] & 0x3f);
-
-    return time;
+    return {
+      .seconds = bcd2ToByte(buf[0] & 0x7f),
+      .minutes = bcd2ToByte(buf[1] & 0x7f),
+      .hours = bcd2ToByte(buf[2] & 0x3f)
+    };
   }
 
-  void setTime(int8_t seconds, int8_t minutes, int8_t hours) {
+  void setTime(const int8_t seconds, const int8_t minutes, const int8_t hours) {
     wire->beginTransmission(deviceAddress);
     wire->write(0x02);
     wire->write(byteToBcd2(seconds));
@@ -125,19 +121,15 @@ public:
       buf[3] = wire->read();
     }
 
-    date.date = bcd2ToByte(buf[0] & 0x3f);
-    date.weekDay = bcd2ToByte(buf[1] & 0x07);
-    date.month = bcd2ToByte(buf[2] & 0x1f);
-
-    if (buf[2] & 0x80)
-      date.year = 1900 + bcd2ToByte(buf[3] & 0xff);
-    else
-      date.year = 2000 + bcd2ToByte(buf[3] & 0xff);
-
-    return date;
+    return {
+      .date = bcd2ToByte(buf[0] & 0x3f),
+      .weekDay = bcd2ToByte(buf[1] & 0x07),
+      .month = bcd2ToByte(buf[2] & 0x1f),
+      .year = (buf[2] & 0x80 ? 1900 : 2000) + bcd2ToByte(buf[3] & 0xff)
+    };
   }
 
-  void setDate(int8_t weekDay, int8_t date, int8_t month, int16_t year) {
+  void setDate(const int8_t weekDay, const int8_t date, const int8_t month, const int16_t year) {
     wire->beginTransmission(deviceAddress);
     wire->write(0x05);
     wire->write(byteToBcd2(date));

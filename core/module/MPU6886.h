@@ -2,8 +2,6 @@
 
 #include <Wire.h>
 
-#define I2C_MPU6886_DEFAULT_ADDRESS 0x68
-
 namespace Core {
 
 struct Point3 {
@@ -15,13 +13,12 @@ struct Point3 {
 class MPU6886 {
 
 private:
+  const float aRes = 8.0 / 32768.0;
+  const float gRes = 2000.0 / 32768.0;
   int deviceAddress;
   TwoWire *wire;
-  Point3 point;
-  float aRes = 8.0 / 32768.0;
-  float gRes = 2000.0 / 32768.0;
 
-  void writeByte(uint8_t address, uint8_t data) {
+  void writeByte(const uint8_t address, const uint8_t data) {
     delay(5);
     wire->beginTransmission(deviceAddress);
     wire->write(address);
@@ -29,7 +26,7 @@ private:
     wire->endTransmission();
   }
 
-  uint8_t readByte(uint8_t address) {
+  uint8_t readByte(const uint8_t address) {
     wire->beginTransmission(deviceAddress);
     wire->write(address);
     wire->endTransmission();
@@ -38,7 +35,7 @@ private:
   }
 
 public:
-  MPU6886(int i2c_sda, int i2c_clk, int deviceAddress) {
+  MPU6886(const int i2c_sda, const int i2c_clk, const int deviceAddress) {
     Wire1.begin(i2c_sda, i2c_clk);
     this->wire = &Wire1;
     this->deviceAddress = deviceAddress;
@@ -61,17 +58,19 @@ public:
   }
 
   Point3 getAccel() {
-    point.x = (int16_t)((readByte(0x3b) << 8) | readByte(0x3c)) * aRes;
-    point.y = (int16_t)((readByte(0x3d) << 8) | readByte(0x3e)) * aRes;
-    point.z = (int16_t)((readByte(0x3f) << 8) | readByte(0x40)) * aRes;
-    return point;
+    return {
+      .x = (int16_t)((readByte(0x3b) << 8) | readByte(0x3c)) * aRes,
+      .y = (int16_t)((readByte(0x3d) << 8) | readByte(0x3e)) * aRes,
+      .z = (int16_t)((readByte(0x3f) << 8) | readByte(0x40)) * aRes
+    };
   }
 
   Point3 getGyro() {
-    point.x = (int16_t)((readByte(0x43) << 8) | readByte(0x44)) * gRes;
-    point.y = (int16_t)((readByte(0x45) << 8) | readByte(0x46)) * gRes;
-    point.z = (int16_t)((readByte(0x47) << 8) | readByte(0x48)) * gRes;
-    return point;
+    return {
+      .x = (int16_t)((readByte(0x43) << 8) | readByte(0x44)) * gRes,
+      .y = (int16_t)((readByte(0x45) << 8) | readByte(0x46)) * gRes,
+      .z = (int16_t)((readByte(0x47) << 8) | readByte(0x48)) * gRes
+    };
   }
 
   float getTemp() {

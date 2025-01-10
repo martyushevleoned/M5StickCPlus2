@@ -5,10 +5,10 @@ namespace Core {
 class Led {
 
 private:
-  int8_t pin;
+  int pin;
 
 public:
-  Led(int8_t pin) {
+  Led(const int pin) {
     this->pin = pin;
     pinMode(pin, OUTPUT);
   }

@@ -11,7 +11,6 @@ class Menu : public MenuItem {
 private:
   int currentItem = 0;
 
-
   void display() {
 
     stick->lcd.fillScreen(backgroundColor);
@@ -21,12 +20,12 @@ private:
     stick->lcd.setTextSize(2);
     stick->lcd.setCursor(padding, padding);
     stick->lcd.print(name());
-    stick->lcd.printRight(stick->lcd.width() - padding, padding, String(stick->battery.getVoltage()));
+    stick->lcd.printRight(String(stick->battery.getBatteryChargePercent(), 0) + "%", stick->lcd.width() - padding, padding);
 
     int headerHeight = stick->lcd.fontHeight() + 2 * padding;
     stick->lcd.drawFastHLine(0, headerHeight, stick->lcd.width(), textColor);
     stick->lcd.setWidthScaledTextSize(items.at(currentItem)->name());
-    stick->lcd.printCenter(stick->lcd.width() / 2, stick->lcd.height() / 2 + headerHeight, items.at(currentItem)->name());
+    stick->lcd.printCenter(items.at(currentItem)->name(), stick->lcd.width() / 2, stick->lcd.height() / 2 + headerHeight);
   }
 
 protected:
@@ -35,7 +34,7 @@ protected:
   uint16_t textColor;
 
 public:
-  Menu(String menuName, std::vector<std::shared_ptr<MenuItem>> items, uint16_t textColor = WHITE, uint16_t backgroundColor = BLACK)
+  Menu(const String menuName, const std::vector<std::shared_ptr<MenuItem>> &items, const uint16_t textColor = WHITE, const uint16_t backgroundColor = BLACK)
     : MenuItem(menuName) {
     this->items = items;
     this->textColor = textColor;

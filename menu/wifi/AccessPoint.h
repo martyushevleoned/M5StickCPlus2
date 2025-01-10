@@ -22,8 +22,8 @@ public:
 
     stick->lcd.fillScreen(BLACK);
     stick->lcd.setTextSize(2);
-    stick->lcd.printCenter(stick->lcd.width() / 2, stick->lcd.height() / 3, ssid);
-    stick->lcd.printCenter(stick->lcd.width() / 2, stick->lcd.height() * 2 / 3, password);
+    stick->lcd.printCenter(ssid, stick->lcd.width() / 2, stick->lcd.height() / 3);
+    stick->lcd.printCenter(password, stick->lcd.width() / 2, stick->lcd.height() * 2 / 3);
 
     while (true) {
       tick();
