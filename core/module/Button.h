@@ -4,17 +4,18 @@
 
 namespace Core {
 
-enum class ButtonState { Released,
-                         Pressed,
-                         Holded };
-
 class Button {
 
 private:
+  enum class ButtonState { Released,
+                           Pressed,
+                           Holded };
+
+private:
   int8_t pin;
+  unsigned long lastReleaseTime = millis();
   ButtonState previousState = ButtonState::Released;
   ButtonState currentState = ButtonState::Released;
-  unsigned long lastReleaseTime = millis();
 
 public:
   Button(const int8_t pin) {
@@ -37,7 +38,6 @@ public:
         currentState = ButtonState::Holded;
       }
     }
-
   }
 
   bool isReleased() {

@@ -43,7 +43,7 @@ public:
     } else if (lenght < 10) {
       setTextSize(4);
     } else {
-      setTextSize(2);
+      setTextSize(3);
     }
   }
 
