@@ -45,6 +45,7 @@ private:
     return spectrum;
   }
 
+public:
   static unsigned long nextPow2(const unsigned long N) {
     unsigned long pow2 = 1;
     while (pow2 < N)
@@ -52,7 +53,6 @@ private:
     return pow2;
   }
 
-public:
   static std::vector<double> fftA(const std::vector<int32_t> &samples) {
     const unsigned long N = nextPow2(samples.size());
     std::vector<std::complex<double>> spectrum(N);

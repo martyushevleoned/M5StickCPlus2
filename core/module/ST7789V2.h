@@ -2,6 +2,8 @@
 
 #include <TFT_eSPI.h>
 
+#define RGB(r, g, b) ((r & 0b11111000) << 8) | ((g & 0b11111100) << 3) | (b >> 3)
+
 #define BLACK 0x0000
 #define BLUE 0x001F
 #define RED 0xF800

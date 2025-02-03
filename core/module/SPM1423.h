@@ -47,9 +47,19 @@ public:
     return std::vector<int32_t>(samples, samples + samplesRead);
   }
 
-  std::vector<int32_t> getSamples(int32_t size) {
-    readSamples();
-    return std::vector<int32_t>(samples, samples + size);
+  std::vector<int32_t> getSamples(const int32_t size) {
+    std::vector<int32_t> result;
+
+    while (result.size() != size) {
+      std::vector<int32_t> samples = getSamples();
+
+      if (samples.size() + result.size() <= size)
+        result.insert(result.end(), samples.begin(), samples.end());
+      else 
+        result.insert(result.end(), samples.begin(), samples.begin() + size - result.size());
+    }
+
+    return result;
   }
 };
 

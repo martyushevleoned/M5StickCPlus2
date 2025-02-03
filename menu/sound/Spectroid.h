@@ -21,7 +21,7 @@ public:
 
     while (true) {
 
-      std::vector<double> rawSpectrumA = Utils::Fourier::fftA(stick->mic.getSamples(SAMPLE_BUFFER_SIZE));
+      std::vector<double> rawSpectrumA = Utils::Fourier::fftA(stick->mic.getSamples(512));
       std::vector<double> spectrumA(rawSpectrumA.begin() + offset, rawSpectrumA.begin() + countOfSamples + offset);
       double maxValue = *(std::max_element(std::begin(spectrumA), std::end(spectrumA)));
 
